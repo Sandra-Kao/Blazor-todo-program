@@ -1,0 +1,65 @@
+﻿@page "/todoItemPage"
+@using Microsoft.Extensions.Logging;
+@inject ILogger<TodoItemPage> Logger;
+@using TodoItems_Crud_Blazor.Services;
+@using TodoItems_Crud_Blazor.Models;
+@using TodoItems_Crud_Blazor.Components;
+@inject ITodoItemsService TodoItemsService;
+
+<h1>@_title</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+<form>
+    <div class="form-group row">
+        <label for="Name" class="col-sm-2 col-form-label">Item</label>
+        <div class="col-sm-10">
+            <input class="form-control" placeholder="Please input the todo item" @bind="_todoItem.Name" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="IsComplete" class="col-sm-2 col-form-label">IsComplete</label>
+        <div class="col-sm-1">
+            <input class="form-control" placeholder="IsComplete" type="checkbox" @bind="_todoItem.IsComplete" />
+        </div>
+    </div>
+    <input type="button" value="Add" class="btn btn-primary" @onclick="Add"/>
+    <input type="button" value="Update" class="btn btn-primary" @onclick="@(async ()=> await Update(_todoItem.Id))" />
+</form>
+<br />
+
+<TodoItemGrid TodoItems="_todoItems" OnEdit="@Edit" OnDelete="@Del"> Loading now... </TodoItemGrid>
+
+@code{
+    private string _title;
+    private TodoItem _todoItem;
+    private List<TodoItem> _todoItems;
+    protected override async Task OnInitializedAsync()
+    {
+        _title = "Todo Item";
+        _todoItem = new TodoItem();
+        _todoItems = (await TodoItemsService.GetAsync()).ToList();
+    }
+    private async Task Add()
+    {
+        Logger.LogInformation("Add Start");
+        var newTodo = await TodoItemsService.Add(_todoItem);
+        _todoItems.Add(newTodo);
+    }
+    private async Task Edit(int id)
+    {
+        _todoItem = await TodoItemsService.GetAsync(id);
+    }
+    private async Task Update(int id)
+    {
+        await TodoItemsService.Update(id, _todoItem);
+        var index = _todoItems.FindIndex(m => m.Id == id);
+        _todoItems[index] = _todoItem;
+    }
+    private async Task Del(int id)
+    {
+        await TodoItemsService.Del(id);
+        var index = _todoItems.FindIndex(m => m.Id == id);
+        _todoItems.RemoveAt(index);
+        _todoItems = (await TodoItemsService.GetAsync()).ToList();
+    }
+}
