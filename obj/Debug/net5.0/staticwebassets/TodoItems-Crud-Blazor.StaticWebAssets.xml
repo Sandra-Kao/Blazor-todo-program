@@ -1,0 +1,4 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="/" Path="C:\Users\sandra.kao\Desktop\NetConfTaiwan2020\BlazorLab\TodoBlazorProgram\TodoItems-Crud-Blazor\bin\Debug\net5.0\wwwroot\" />
+  <ContentRoot BasePath="/" Path="C:\Users\sandra.kao\Desktop\NetConfTaiwan2020\BlazorLab\TodoBlazorProgram\TodoItems-Crud-Blazor\obj\Debug\net5.0\scopedcss\bundle\" />
+</StaticWebAssets>
