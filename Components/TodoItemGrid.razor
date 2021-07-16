@@ -1,0 +1,55 @@
+@using Models;
+@if (TodoItems == null)
+{
+    <p><em>@ChildContent</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>項目</th>
+                <th>已經完成</th>
+                <th>Control</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in TodoItems)
+            {
+                <tr>
+                    <td>@todo.Id</td>
+                    <td>@todo.Name</td>
+                    <td>
+                        @if(@todo.IsComplete==true){<p> ✔️ </p>}
+                        else{<p> ⚔️ </p>}
+                    </td>
+                    <td>
+                        <input type="button" value="Edit" class="btn btn-primary" @onclick="@(async ()=> await Edit(todo.Id))" />
+                        <input type="button" value="Del" class="btn btn-danger" @onclick="@(async ()=> await Del(todo.Id))" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+        public RenderFragment ChildContent { get; set; }
+    [Parameter]
+        public List<TodoItem> TodoItems { get; set; }
+    [Parameter]
+        public EventCallback<int> OnEdit { get; set; }
+    [Parameter]
+        public EventCallback<int> OnDelete { get; set; }
+    async Task Edit(int id)
+    {
+        await OnEdit.InvokeAsync(id);
+    }
+    async Task Del(int id)
+    {
+        await OnDelete.InvokeAsync(id);
+    }
+}
